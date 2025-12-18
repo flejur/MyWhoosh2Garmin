@@ -1,4 +1,4 @@
-name: Self-hosted runner — Run MyWhoosh2Garmin
+name: Hosted runner — Run MyWhoosh2Garmin
 
 on:
   workflow_dispatch: {}
