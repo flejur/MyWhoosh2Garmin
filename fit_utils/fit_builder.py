@@ -208,8 +208,8 @@ class MyWhooshFitBuilder:
         """Add file_id message."""
         file_id = FileIdMessage()
         file_id.type = FileType.ACTIVITY
-        file_id.manufacturer = "tacx"
-        file_id.product = "tacx neo2 t smart"
+        file_id.manufacturer = 89
+        file_id.product = 3879
         file_id.serial_number = 3313379353
         file_id.time_created = self.activity_data.start_ts_miliseconds
         self.builder.add(file_id)
