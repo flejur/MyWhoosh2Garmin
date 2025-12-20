@@ -208,8 +208,8 @@ class MyWhooshFitBuilder:
         """Add file_id message."""
         file_id = FileIdMessage()
         file_id.type = FileType.ACTIVITY
-        file_id.manufacturer = Manufacturer.GARMIN.value
-        file_id.product = GarminProduct.EDGE_530.value
+        file_id.manufacturer = "tacx"
+        file_id.product = "tacx neo2 t smart"
         file_id.serial_number = 3313379353
         file_id.time_created = self.activity_data.start_ts_miliseconds
         self.builder.add(file_id)
