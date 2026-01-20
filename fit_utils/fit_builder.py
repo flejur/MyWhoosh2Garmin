@@ -209,7 +209,7 @@ class MyWhooshFitBuilder:
         file_id = FileIdMessage()
         file_id.type = FileType.ACTIVITY
         file_id.manufacturer = Manufacturer.GARMIN.value
-        file_id.product = GarminProduct.EDGE_530.value
+        file_id.product = 3432
         file_id.serial_number = 3313379353
         file_id.time_created = self.activity_data.start_ts_miliseconds
         self.builder.add(file_id)
