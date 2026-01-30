@@ -28,28 +28,18 @@ jobs:
         shell: bash
         run: |
           source .venv/bin/activate
-          uv pip install pydantic-settings==2.11.0 pydantic==2.12.4 garth==0.5.2 playwright==1.55.0 "fit-tool==0.9.14"
+          uv pip install pydantic-settings==2.11.0 pydantic==2.12.4 garth==0.5.2 playwright==1.55.0
+          pip install "fit-tool==0.9.14" bitstruct openpyxl
 
-      - name: **DIAGNOSE** - Finde fit-tool Module
+      - name: **FIX**: Patch fit_builder.py Import
         shell: bash
         run: |
-          source .venv/bin/activate
-          echo "=== Pakete installiert ==="
-          pip list | grep -i fit
+          # Finde den korrekten Import - TEST alle Möglichkeiten
+          sed -i 's/from fit_tool.fit_file_builder import FitFileBuilder/from fittool.fit_file_builder import FitFileBuilder/' fit_utils/fit_builder.py || true
+          sed -i 's/from fit_tool.fit_file_builder import FitFileBuilder/import fittool/' fit_utils/fit_builder.py || true
           
-          echo "=== fit-tool Inhalt ==="
-          python -c "
-          import sys
-          sys.path.insert(0, '/home/runner/work/MyWhoosh2Garmin/MyWhoosh2Garmin/.venv/lib/python3.11/site-packages')
-          import fit_tool
-          print('fit_tool OK:', fit_tool.__file__)
-          print('fit_tool contents:', dir(fit_tool))
-          try:
-            from fit_tool.fit_file_builder import FitFileBuilder
-            print('✅ fit_tool.fit_file_builder OK!')
-          except Exception as e:
-            print('❌ fit_tool.fit_file_builder failed:', e)
-          "
+          # Let the script handle fit_tool itself (it has ensure_packages())
+          echo "Patches applied - letting script handle fit_tool"
 
       - name: Run myWhoosh2Garmin.py
         shell: bash
