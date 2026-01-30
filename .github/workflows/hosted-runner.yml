@@ -27,7 +27,7 @@ jobs:
       - name: Create virtual environment
         shell: bash
         run: |
-          uv venv --python 3.11
+          uv venv --python 3.13
 
       - name: Install project (from pyproject.toml)
         shell: bash
