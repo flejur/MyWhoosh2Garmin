@@ -29,21 +29,26 @@ jobs:
         run: |
           source .venv/bin/activate
           uv pip install pydantic-settings==2.11.0 pydantic==2.12.4 garth==0.5.2 playwright==1.55.0 "fit-tool==0.9.14"
-          pip install openpyxl==2.5.12 bitstruct==8.11.1  # fit-tool deps
 
-      - name: Patch fit_utils/fit_builder.py for correct import
+      - name: **DIAGNOSE** - Finde fit-tool Module
         shell: bash
         run: |
-          # Ersetze problematischen Import in fit_builder.py
-          sed -i 's/from fit_tool.fit_file_builder import FitFileBuilder/from fittool.fit_file_builder import FitFileBuilder/' fit_utils/fit_builder.py
-          # Teste korrigierten Import
+          source .venv/bin/activate
+          echo "=== Pakete installiert ==="
+          pip list | grep -i fit
+          
+          echo "=== fit-tool Inhalt ==="
           python -c "
+          import sys
+          sys.path.insert(0, '/home/runner/work/MyWhoosh2Garmin/MyWhoosh2Garmin/.venv/lib/python3.11/site-packages')
+          import fit_tool
+          print('fit_tool OK:', fit_tool.__file__)
+          print('fit_tool contents:', dir(fit_tool))
           try:
-            from fittool.fit_file_builder import FitFileBuilder
-            print('✅ fittool import OK!')
-          except ImportError as e:
-            print('❌ Import failed:', e)
-            exit(1)
+            from fit_tool.fit_file_builder import FitFileBuilder
+            print('✅ fit_tool.fit_file_builder OK!')
+          except Exception as e:
+            print('❌ fit_tool.fit_file_builder failed:', e)
           "
 
       - name: Run myWhoosh2Garmin.py
@@ -58,4 +63,4 @@ jobs:
           GARMIN_TOKENS: ${{ secrets.GARMIN_TOKENS }}
         run: |
           source .venv/bin/activate
-          python
+          python myWhoosh2Garmin.py
