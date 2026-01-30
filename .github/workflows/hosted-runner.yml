@@ -11,28 +11,35 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-      - name: Ensure `uv` CLI available (or install fallback)
+      - name: Ensure `uv` CLI available
         shell: bash
         run: |
-          set -euo pipefail
-          if command -v uv >/dev/null 2>&1; then
-            uv --version
-            echo "uv found: $(command -v uv)"
-          else
-            echo "uv not found; installing via curl"
-            curl -LsSf https://astral.sh/uv/install.sh | sh
-          fi
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          export PATH="$HOME/.local/bin:$PATH"
 
       - name: Create virtual environment
         shell: bash
-        run: |
-          uv venv --python 3.12
+        run: uv venv --python 3.11
 
-      - name: Install project (from pyproject.toml)
+      - name: Install ALL dependencies correctly
         shell: bash
         run: |
-          uv pip install -r pyproject.toml
+          set -euo pipefail
+          source .venv/bin/activate
+          
+          # Core deps
+          uv pip install pydantic-settings==2.11.0 pydantic==2.12.4 garth==0.5.2 playwright==1.55.0
+          
+          # Install CORRECT fit_tool from GitHub source (PyPI-Version ist kaputt)
+          pip install git+https://github.com/tuna-f1sh/fit_tool.git
+          
+          # Verify installation
+          python -c "from fit_tool.fit_file_builder import FitFileBuilder; print('fit_tool OK!')"
 
       - name: Run myWhoosh2Garmin.py
         shell: bash
