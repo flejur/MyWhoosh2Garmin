@@ -1,48 +1,20 @@
-name: Hosted runner — Run MyWhoosh2Garmin
-
+name: MyWhoosh2Garmin
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
 
 jobs:
-  run-on-github-hosted:
-    name: Run on Ubuntu runner
-    runs-on: ubuntu-latest    
+  run:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Python 3.11
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-
-      - name: Install uv
-        run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          export PATH="$HOME/.local/bin:$PATH"
-
-      - name: Create venv
-        run: uv venv --python 3.11
-
-      - name: Install deps
-        shell: bash
-        run: |
-          source .venv/bin/activate
-          uv pip install pydantic-settings==2.11.0 pydantic==2.12.4 garth==0.5.2 playwright==1.55.0
-          pip install "fit-tool==0.9.14" bitstruct openpyxl
-
-      - name: **FIX**: Patch fit_builder.py Import
-        shell: bash
-        run: |
-          # Finde den korrekten Import - TEST alle Möglichkeiten
-          sed -i 's/from fit_tool.fit_file_builder import FitFileBuilder/from fittool.fit_file_builder import FitFileBuilder/' fit_utils/fit_builder.py || true
-          sed -i 's/from fit_tool.fit_file_builder import FitFileBuilder/import fittool/' fit_utils/fit_builder.py || true
-          
-          # Let the script handle fit_tool itself (it has ensure_packages())
-          echo "Patches applied - letting script handle fit_tool"
-
-      - name: Run myWhoosh2Garmin.py
-        shell: bash
+          python-version: 3.11
+      
+      - run: |
+          pip install -r requirements.txt || pip install pydantic-settings pydantic garth playwright fit-tool
+          python myWhoosh2Garmin.py
         env:
           STRAVA_CLIENT_ID: ${{ secrets.STRAVA_CLIENT_ID }}
           STRAVA_CLIENT_SECRET: ${{ secrets.STRAVA_CLIENT_SECRET }}
@@ -51,6 +23,3 @@ jobs:
           STRAVA_EXPIRES_IN: ${{ secrets.STRAVA_EXPIRES_IN }}
           STRAVA_REFRESH_TOKEN: ${{ secrets.STRAVA_REFRESH_TOKEN }}
           GARMIN_TOKENS: ${{ secrets.GARMIN_TOKENS }}
-        run: |
-          source .venv/bin/activate
-          python myWhoosh2Garmin.py
