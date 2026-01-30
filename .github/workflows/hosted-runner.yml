@@ -16,30 +16,30 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Ensure `uv` CLI available
-        shell: bash
+      - name: Install uv
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
           export PATH="$HOME/.local/bin:$PATH"
 
-      - name: Create virtual environment
-        shell: bash
+      - name: Create venv
         run: uv venv --python 3.11
 
-      - name: Install ALL dependencies correctly
+      - name: Install deps + fit-tool WORKAROUND
         shell: bash
         run: |
           set -euo pipefail
           source .venv/bin/activate
           
-          # Core deps
+          # 1. Core deps
           uv pip install pydantic-settings==2.11.0 pydantic==2.12.4 garth==0.5.2 playwright==1.55.0
           
-          # Install CORRECT fit_tool from GitHub source (PyPI-Version ist kaputt)
-          pip install git+https://github.com/tuna-f1sh/fit_tool.git
+          # 2. Download & install fit-tool source MANUALLY (PyPI wheels sind problematisch)
+          pip download --no-deps --dest /tmp fit-tool==0.9.13
+          cd /tmp && tar -xzf fit-tool-0.9.13.tar.gz && cd fit-tool-0.9.13
+          pip install --no-deps .
           
-          # Verify installation
-          python -c "from fit_tool.fit_file_builder import FitFileBuilder; print('fit_tool OK!')"
+          # 3. Verify
+          python -c "from fit_tool.fit_file_builder import FitFileBuilder; print('✅ fit_tool import OK!')"
 
       - name: Run myWhoosh2Garmin.py
         shell: bash
@@ -52,6 +52,5 @@ jobs:
           STRAVA_REFRESH_TOKEN: ${{ secrets.STRAVA_REFRESH_TOKEN }}
           GARMIN_TOKENS: ${{ secrets.GARMIN_TOKENS }}
         run: |
-          set -euo pipefail
           source .venv/bin/activate
           python myWhoosh2Garmin.py
