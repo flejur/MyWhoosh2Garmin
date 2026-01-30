@@ -24,18 +24,27 @@ jobs:
       - name: Create venv
         run: uv venv --python 3.11
 
-      - name: Install deps (skip fit-tool import check)
+      - name: Install deps
         shell: bash
         run: |
-          set -euo pipefail
           source .venv/bin/activate
-          
-          # Alle deps inkl. fit-tool 0.9.14
-          uv pip install pydantic-settings==2.11.0 pydantic==2.12.4 garth==0.5.2 playwright==1.55.0
-          pip install "fit-tool==0.9.14"
-          
-          # Test SKRIPT direkt (nicht Import) - das ist was zählt
-          python myWhoosh2Garmin.py --help || echo "Script läuft (help OK)"
+          uv pip install pydantic-settings==2.11.0 pydantic==2.12.4 garth==0.5.2 playwright==1.55.0 "fit-tool==0.9.14"
+          pip install openpyxl==2.5.12 bitstruct==8.11.1  # fit-tool deps
+
+      - name: Patch fit_utils/fit_builder.py for correct import
+        shell: bash
+        run: |
+          # Ersetze problematischen Import in fit_builder.py
+          sed -i 's/from fit_tool.fit_file_builder import FitFileBuilder/from fittool.fit_file_builder import FitFileBuilder/' fit_utils/fit_builder.py
+          # Teste korrigierten Import
+          python -c "
+          try:
+            from fittool.fit_file_builder import FitFileBuilder
+            print('✅ fittool import OK!')
+          except ImportError as e:
+            print('❌ Import failed:', e)
+            exit(1)
+          "
 
       - name: Run myWhoosh2Garmin.py
         shell: bash
@@ -49,4 +58,4 @@ jobs:
           GARMIN_TOKENS: ${{ secrets.GARMIN_TOKENS }}
         run: |
           source .venv/bin/activate
-          python myWhoosh2Garmin.py
+          python
