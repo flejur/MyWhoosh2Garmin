@@ -9,7 +9,7 @@ dependencies = [
     "pydantic>=2.12.4,<3.0",
     "garth>=0.5.2,<1.0",
     "playwright>=1.55.0,<2.0",
-    # fit-tool==0.9.13 entfernt - wird runtime vom Skript installiert
+    # fit-tool wird runtime vom Skript installiert, nicht als hard dep
 ]
 
 [project.optional-dependencies]
@@ -24,7 +24,7 @@ build-backend = "hatchling.build"
 
 [tool.ruff]
 line-length = 88
-target-version = "py311"  # Kompatibel mit allen unterstützten Pythons
+target-version = "py311"
 
 [tool.ruff.lint]
 select = [
@@ -35,7 +35,7 @@ select = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"__init__.py" = ["F401"]  # unused imports in __init__.py
+"__init__.py" = ["F401"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["mywhoosh2garmin"]
