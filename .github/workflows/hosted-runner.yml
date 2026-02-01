@@ -1,12 +1,13 @@
-name: Self-hosted runner — Run MyWhoosh2Garmin
+
+name: Hosted runner — Run MyWhoosh2Garmin
 
 on:
   workflow_dispatch: {}
 
 jobs:
-  run-on-self-hosted:
-    name: Run on self-hosted runner
-    runs-on: [self-hosted]
+  run-on-github-hosted:
+    name: Run on Ubuntu runner
+    runs-on: ubuntu-latest    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
