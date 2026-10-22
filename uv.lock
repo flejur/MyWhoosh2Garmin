@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.13"
 
 [[package]]
@@ -105,15 +105,15 @@ wheels = [
 
 [[package]]
 name = "fit-tool"
-version = "0.9.13"
+version = "0.9.14"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "bitstruct" },
     { name = "openpyxl" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0c/8f/9446c4eb9a8e5720b18848b3036653c4fdd0b58746e2c62f1eef05e7632b/fit-tool-0.9.13.tar.gz", hash = "sha256:63d5655dbacf4121178e7743ad4cf0d980abd53da6316a419c205941ce049c55", size = 137841, upload-time = "2022-10-05T18:31:20.446Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e0/b1/d23a3b8121c522471807e78b26476c42ceefc54ae547eb697b6f5a93441d/fit_tool-0.9.14.tar.gz", hash = "sha256:ae4e9a414f42be5e4eb2addb6703fd4f48dec5e281b1acfca56509c9117a0071", size = 137210, upload-time = "2026-01-28T02:21:18.638Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3d/c1/27e6ff55c0bca9b61b374f72dad8143908b1d1e792e04e2dbd74ade26857/fit_tool-0.9.13-py3-none-any.whl", hash = "sha256:15269280635ff3a4baedfe1346840767f660817f136f4dec69b858ee855a9e9c", size = 224079, upload-time = "2022-10-05T18:31:18.298Z" },
+    { url = "https://files.pythonhosted.org/packages/56/e0/f189bfd3af1327096beaac22dff7d1ecf10885da3b5fd84228ee31b81e28/fit_tool-0.9.14-py3-none-any.whl", hash = "sha256:490083406fb2af097b45377255ba3f7f4c0836cfba07ba48bb9002805cb72616", size = 224167, upload-time = "2026-01-28T02:21:16.523Z" },
 ]
 
 [[package]]
@@ -205,7 +205,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "fit-tool", specifier = "==0.9.13" },
+    { name = "fit-tool", specifier = "==0.9.14" },
     { name = "garth", specifier = "==0.5.2" },
     { name = "playwright", specifier = "==1.55.0" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = "==4.4.0" },
