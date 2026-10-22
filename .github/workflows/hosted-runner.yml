@@ -43,4 +43,4 @@ jobs:
           GARMIN_TOKENS: ${{ secrets.GARMIN_TOKENS }}
         run: |
           set -euo pipefail
-          uv run --locked python myWhoosh2Garmin.py
+          uv run --no-project --python 3.13 python myWhoosh2Garmin.py
