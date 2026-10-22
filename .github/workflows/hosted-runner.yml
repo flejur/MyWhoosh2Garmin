@@ -1,4 +1,3 @@
-
 name: Hosted runner — Run MyWhoosh2Garmin
 
 on:
@@ -7,33 +6,30 @@ on:
 jobs:
   run-on-github-hosted:
     name: Run on Ubuntu runner
-    runs-on: ubuntu-latest    
+    runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-
-      - name: Ensure `uv` CLI available (or install fallback)
+      - name: Ensure uv is available
         shell: bash
         run: |
           set -euo pipefail
-          if command -v uv >/dev/null 2>&1; then
-            uv --version
-            echo "uv found: $(command -v uv)"
-          else
-            echo "uv not found; installing via curl"
+
+          if ! command -v uv >/dev/null 2>&1; then
             curl -LsSf https://astral.sh/uv/install.sh | sh
+            echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+            export PATH="$HOME/.local/bin:$PATH"
           fi
 
-      - name: Create virtual environment
-        shell: bash
-        run: |
-          uv venv --python 3.13
+          uv --version
 
-      - name: Install project (from pyproject.toml)
+      - name: Install dependencies
         shell: bash
         run: |
-          uv pip install -r pyproject.toml
+          set -euo pipefail
+          uv sync --python 3.13 --locked --no-install-project
 
       - name: Run myWhoosh2Garmin.py
         shell: bash
@@ -47,5 +43,4 @@ jobs:
           GARMIN_TOKENS: ${{ secrets.GARMIN_TOKENS }}
         run: |
           set -euo pipefail
-          source .venv/bin/activate
-          python myWhoosh2Garmin.py
+          uv run --locked python myWhoosh2Garmin.py
